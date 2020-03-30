@@ -26,5 +26,6 @@
     "c-cpp-flylint.clang.enable": false,
     "gtest-adapter.debugConfig": [
         "UT Launch"
-    ]
+    ],
+    "gtest-adapter.supportLocation": true
 }
