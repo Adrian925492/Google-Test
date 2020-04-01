@@ -1,6 +1,8 @@
 CXX = C:\ProgramowanieToolchain\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\g++.exe
 CC = C:\ProgramowanieToolchain\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\gcc.exe
 
+USE_STATIC_LIBRARY := 0
+
 CXXFLAGS = -std=gnu++11 -Wall
 INCLUDES = \
 -IFramework/googletest-master/googletest/ \
@@ -9,6 +11,12 @@ INCLUDES = \
 -IFramework/googletest-master/googlemock/include \
 
 LDFLAGS = 
+
+LIBDIR = \
+-LLib
+
+LIB = \
+-lgtest
 
 GTEST_DIR = Framework/googletest-master/googletest/src
 GMOCK_DIR = Framework/googletest-master/googlemock/src
@@ -27,7 +35,7 @@ NAME = GoogleTest
 OUTPUT_DIR = Output\UT
 OBJ_DIR = $(OUTPUT_DIR)\Obj
 
-SRC = $(SOURCES) $(TESTSOURCES)
+SRC = $(SOURCES) #$(TESTSOURCES)
 
 OBJECTS = \
 $(addprefix $(OBJ_DIR)/, $(notdir $(filter %.o, $(SRC:.cpp=.o)))) \
@@ -39,7 +47,7 @@ all: $(OUTPUT_DIR) $(NAME)
 	@echo $(OBJECTS)
 
 $(NAME): $(OBJECTS)
-	$(CXX) -o $(OUTPUT_DIR)/$(NAME).exe $(OBJECTS)
+	$(CXX) -o $(OUTPUT_DIR)/$(NAME).exe $(OBJECTS) $(LIBDIR) $(LIB) 
 
 $(OBJ_DIR)/%.o: %.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCLUDES) $< -o $@
