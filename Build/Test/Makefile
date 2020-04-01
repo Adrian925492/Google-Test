@@ -27,7 +27,8 @@ $(GMOCK_DIR)/gmock-all.cc \
 $(GTEST_DIR)/gtest_main.cc \
 
 SOURCES = \
-Source/InitialTest.cc \
+Source/SimpleAssertionsTest.cc \
+Source/SuitableAssertionsTest.cc \
 
 
 NAME = GoogleTest
