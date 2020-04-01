@@ -1,0 +1,31 @@
+{
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "googletest.failed",
+                "settings": {
+                    "foreground": "#f00"
+                }
+            },
+            {
+                "scope": "googletest.passed",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            },
+            {
+                "scope": "googletest.run",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            }
+        ]
+    },
+    "c-cpp-flylint.cppcheck.executable": "C:/ProgramowanieToolchain/CppCheck/cppcheck",
+    "c-cpp-flylint.flexelint.enable": false,
+    "c-cpp-flylint.clang.enable": false,
+    "gtest-adapter.debugConfig": [
+        "UT Launch"
+    ],
+    "gtest-adapter.supportLocation": true
+}
