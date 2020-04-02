@@ -128,3 +128,4 @@ TEST(SuitableAssertions, StaticAssertionTest)
 {
     ::testing::StaticAssertTypeEq<int, int>();  //Call compile error if types are not fit together
 }
+

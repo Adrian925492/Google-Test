@@ -29,6 +29,8 @@ $(GTEST_DIR)/gtest_main.cc \
 SOURCES = \
 Source/SimpleAssertionsTest.cc \
 Source/SuitableAssertionsTest.cc \
+Source/GtestFeaturesTest.cc \
+Source/Fixture.cc \
 
 
 NAME = GoogleTest
@@ -51,10 +53,10 @@ $(NAME): $(OBJECTS)
 	$(CXX) -o $(OUTPUT_DIR)/$(NAME).exe $(OBJECTS) $(LIBDIR) $(LIB) 
 
 $(OBJ_DIR)/%.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCLUDES) $< -o $@
+	$(CXX) -c -g $(CXXFLAGS) $(INCLUDES) $< -o $@
 
 $(OBJ_DIR)/%.o: %.cc
-	$(CXX) -c $(CXXFLAGS) $(INCLUDES) $< -o $@
+	$(CXX) -c -g $(CXXFLAGS) $(INCLUDES) $< -o $@
 
 $(OUTPUT_DIR):
 	mkdir $(subst /, \\, $@)
