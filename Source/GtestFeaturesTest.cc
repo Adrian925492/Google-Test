@@ -21,3 +21,25 @@ TEST(GtestFeatures, ScopedTraceMessageTest)
 
     EXPECT_EQ(a, b);
 }
+
+/* Fatal failure inside sub - outines */
+void foo(bool property)
+{
+    ASSERT_TRUE(property); //Cause fatal failure. It will break ONLY the subroutine, not the test that calls that subroutine
+}
+
+TEST(GtestFeatures, FatalFailureTest)
+{
+    foo(true);
+
+    //However, we can propagate the fatal failure using special assertion
+    ASSERT_NO_FATAL_FAILURE(foo(true));     //Than the fatal failure occurence will propagate t test scope
+
+    EXPECT_TRUE(true);     //And we will not reach that point
+
+    //Or we can check if fatal failure has been occured during test
+    if (HasFatalFailure())
+    {
+        SCOPED_TRACE("Fatal faiure!");
+    }
+}
