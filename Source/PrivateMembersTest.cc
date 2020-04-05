@@ -2,10 +2,14 @@
 #include <gmock/gmock.h>
 
 /* Testing private properties of the class (or file):
-1) Include source file (#include "file.cpp"). This is the easiest way, but also not recomennded
-2) Prepare special tsting API header, that will have signatures of methods (private or static functions) only for test
-3) Friend fixture with tested class and add friend methods in fixture with tested methods in tested class
-4) Add FRIEND_TEST(fixture, test) macro in tested class signeture */
+1) Include source file (#include "file.cpp"). This is the easiest way, but also not recomennded (simple, no example)
+2) Prepare special tsting API header, that will have signatures of methods (private or static functions) only for test (simple, no example)
+3) Friend fixture with tested class and add friend methods in fixture with tested methods in tested class (example below)
+4) Add FRIEND_TEST(fixture, test) macro in tested class signeture (example below) */
+
+//The disadvantage of solution 3 and 4 is that informaton about let the test class go into private members has to be in source class declaration.
+// That means, that source class depends a little from test framework. It is strongly reomendded to test only public API members. However, 
+// if it is really needed to test private one, the best solution is to prepare special test API for that (solution 2).
 
 /* Example: friend class - fixture */
 class PrivateMemberTest_1;
