@@ -34,6 +34,7 @@ Source/GtestFeaturesTest.cc \
 Source/Fixture.cc \
 Source/ParametrizedTest.cc \
 Source/PrivateMembersTest.cc \
+Source/MockExample.cc \
 
 
 NAME = GoogleTest
