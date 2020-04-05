@@ -32,6 +32,7 @@ Source/SuitableAssertionsTest.cc \
 Source/GtestFeaturesTest.cc \
 Source/Fixture.cc \
 Source/ParametrizedTest.cc \
+Source/PrivateMembersTest.cc \
 
 
 NAME = GoogleTest
