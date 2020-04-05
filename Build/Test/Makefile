@@ -13,10 +13,10 @@ INCLUDES = \
 LDFLAGS = 
 
 LIBDIR = \
--LLib
+#-LLib
 
 LIB = \
--lgtest
+#-lgtest
 
 GTEST_DIR = Framework/googletest-master/googletest/src
 GMOCK_DIR = Framework/googletest-master/googlemock/src
@@ -24,7 +24,8 @@ GMOCK_DIR = Framework/googletest-master/googlemock/src
 TESTSOURCES = \
 $(GTEST_DIR)/gtest-all.cc \
 $(GMOCK_DIR)/gmock-all.cc \
-$(GTEST_DIR)/gtest_main.cc \
+Source/main.cpp \
+#$(GTEST_DIR)/gtest_main.cc \
 
 SOURCES = \
 Source/SimpleAssertionsTest.cc \
@@ -40,13 +41,14 @@ NAME = GoogleTest
 OUTPUT_DIR = Output\UT
 OBJ_DIR = $(OUTPUT_DIR)\Obj
 
-SRC = $(SOURCES) #$(TESTSOURCES)
+SRC = $(SOURCES) $(TESTSOURCES)
 
 OBJECTS = \
 $(addprefix $(OBJ_DIR)/, $(notdir $(filter %.o, $(SRC:.cpp=.o)))) \
 $(addprefix $(OBJ_DIR)/, $(notdir $(filter %.o, $(SRC:.cc=.o))))
 
 vpath %.cc Source $(GTEST_DIR) $(GMOCK_DIR)
+vpath %.cpp Source
 
 all: $(OUTPUT_DIR) $(NAME)
 	@echo $(OBJECTS)

@@ -43,3 +43,11 @@ TEST(GtestFeatures, FatalFailureTest)
         SCOPED_TRACE("Fatal faiure!");
     }
 }
+
+/* Getting current test name */
+// If it is needed, gtest allows to get current test name and test fixture (suite) name in test case
+TEST(GtestFeatures, GettingTestName)
+{
+    const ::testing::TestInfo* const test_info = ::testing::UnitTest::GetInstance()->current_test_info();
+    EXPECT_TRUE(true) << test_info->name();
+}
