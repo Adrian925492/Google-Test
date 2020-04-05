@@ -62,7 +62,16 @@ public:
 
 TEST(MockExampleTest, InheritanceMock)
 {
-    TestedClass oClass(new MockClass);    //We pass pointer to mock class
+    MockClass oMock;
+    
+    EXPECT_CALL(oMock,method1).Times(1);
+    EXPECT_CALL(oMock,method2).Times(1);
+    EXPECT_CALL(oMock,method3).Times(1);
+    EXPECT_CALL(oMock,method4).Times(1);
+
+    TestedClass oClass(&oMock);    //We pass pointer to mock class
+
+    oClass.foo1();
 }
 
 /* Way2: we have non virtual methods to mock */
@@ -92,17 +101,17 @@ template <typename T>       //Here we realize dependency injection in compile ti
 class TestedClass2
 {
 public:
-    TestedClass2(){}
+    TestedClass2(T* pClass) : _pClass(pClass) {}
 
     void foo1()
     {
-        _oClass.method1();
-        _oClass.method2(1);
-        _oClass.method3(1,2);
-        _oClass.method4();
+        _pClass->method1();
+        _pClass->method2(1);
+        _pClass->method3(1,2);
+        _pClass->method4();
     }
 private:
-    T _oClass;
+    T* _pClass;
 };
 
 class MockClass2        //We have mock klas which, just, hase same methods signature as mocked class
@@ -116,7 +125,16 @@ public:
 
 TEST(MockExampleTest, TemplateMock)
 {
-    TestedClass2<MockClass2> oClass;    //We pass mock instead of impementation
+    MockClass2 oMockClass;
+
+    EXPECT_CALL(oMockClass, method1);
+    EXPECT_CALL(oMockClass, method2);
+    EXPECT_CALL(oMockClass, method3);
+    EXPECT_CALL(oMockClass, method4);
+
+    TestedClass2<MockClass2> oClass(&oMockClass);    //We pass mock instead of impementation
+
+    oClass.foo1();
 }
 
 /* Mocking free functions */
@@ -163,5 +181,11 @@ public:
 
 TEST(MockExampleTest, FreeFunctionMock)
 {
-    FreeFunction_TestedClass oTestedClass(new FreeFunction_Mock);   //Use dependency injection to pass mock object
+    FreeFunction_Mock oMock;
+
+    EXPECT_CALL(oMock, callFoo);
+
+    FreeFunction_TestedClass oTestedClass(&oMock);   //Use dependency injection to pass mock object
+
+    oTestedClass.method();
 }

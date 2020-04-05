@@ -35,7 +35,8 @@ Source/Fixture.cc \
 Source/ParametrizedTest.cc \
 Source/PrivateMembersTest.cc \
 Source/MockExample.cc \
-
+Source/NiceStrictNaggy.cc \
+Source/MockMethodWithSchorternArgumentList.cc \
 
 NAME = GoogleTest
 
