@@ -37,6 +37,9 @@ Source/PrivateMembersTest.cc \
 Source/MockExample.cc \
 Source/NiceStrictNaggy.cc \
 Source/MockMethodWithSchorternArgumentList.cc \
+Source/DelegateMockToOtherImplementation.cc \
+Source/GmockFeatures.cc \
+Source/GmockMatchers.cc \
 
 NAME = GoogleTest
 
