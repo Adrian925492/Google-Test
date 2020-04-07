@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include <string>
+#include <vector>
 
 class Interface7
 {
@@ -181,4 +182,39 @@ TEST(GmockMatchers, SimpleMatchers_floatMatchers)
     TestedClass oClass(&oMock);
 
     oClass.foo7(3.14, 5.2300);        
+}
+
+/* Container matchers */
+using ::testing::BeginEndDistanceIs;
+using ::testing::ContainerEq;
+using ::testing::Contains;
+using ::testing::Each;
+using ::testing::ElementsAre;
+using ::testing::ElementsAreArray;
+using ::testing::IsSubsetOf;
+using ::testing::IsEmpty;
+using ::testing::SizeIs;
+using ::testing::UnorderedElementsAre;
+using ::testing::UnorderedElementsAreArray;
+
+using ::testing::Not; 
+
+//! Here we would use EXPECT_THAT assertion instead of mock check. EXPECT_THAT is gtest assertion and allows to use 
+// gmock matchers for pusrposes other than mocking features.
+TEST(GmockMatchers, SimpleMatchers_containerMatchers)
+{
+    Mock7 oMock;
+
+    std::vector<int> v1 = {1,2,3};
+    int array[3] = {1,2,3};
+    int array2[3] = {3,1,2};
+
+    EXPECT_THAT(v1, ElementsAre(1,2,3));        //Elements are 1,2,3 in order
+    EXPECT_THAT(v1, ElementsAreArray(array));   //Elements are as in array
+    EXPECT_THAT(v1, BeginEndDistanceIs(3));     //container begin - end distance is 3
+    EXPECT_THAT(v1, Contains(2));               //Vi container has 2 inside
+    EXPECT_THAT(v1, SizeIs(3));                 // container size is 3
+    EXPECT_THAT(v1, Not(IsEmpty()));            // container is not empty
+    EXPECT_THAT(v1, UnorderedElementsAreArray(array2)); //Elements are as in array2, but order does not matters
+    EXPECT_THAT(v1, UnorderedElementsAre(2,1,3));       //Elements are as listed, order does not matters
 }
