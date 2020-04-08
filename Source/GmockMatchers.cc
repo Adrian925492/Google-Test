@@ -218,3 +218,14 @@ TEST(GmockMatchers, SimpleMatchers_containerMatchers)
     EXPECT_THAT(v1, UnorderedElementsAreArray(array2)); //Elements are as in array2, but order does not matters
     EXPECT_THAT(v1, UnorderedElementsAre(2,1,3));       //Elements are as listed, order does not matters
 }
+
+/* Poinee matcher */
+using ::testing::Pointee;
+
+TEST(GmockMatchers, SimpleMatchers_pointeeMather)
+{
+    int a = 2;
+    int* p1 = &a;
+
+    EXPECT_THAT(p1, Pointee(Ge(2)));    //Pointee matcher - check if value pointed by pointer is >= 2
+}

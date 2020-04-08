@@ -190,3 +190,36 @@ TEST(GmockFeatures, DifferentExpectationBasingOnArgumentValue)
     oClass.foo2(2);     //Matches expect 2
 }
 
+/* Validating only class atribute and property, not whole class */
+class ClassForCheck
+{
+public:
+    int field;
+    int foo() const {return 1;}
+};
+
+using ::testing::Field;
+using ::testing::Property;
+
+TEST(GmockFeatures, ClassPropertyMatch)
+{
+    ClassForCheck oClass;
+    oClass.field = 2;
+
+    EXPECT_THAT(oClass, Field(&ClassForCheck::field, 2));    //We match only atribute not whole class. The matcher will copy only the property.
+    EXPECT_THAT(oClass, Property(&ClassForCheck::foo, 1));                        //We match only property of the class. The property must be declared as const
+}
+
+/* Sharing matchers */
+using ::testing::AllOf;
+using ::testing::Le;
+
+::testing::Matcher<int> in_range = AllOf(Ge(2), Le(4));     //We define matcher in range, which specifies tht argument has to be in range 2 to 4
+
+TEST(GmockFeatures, MultiusageMatcher)
+{
+    int a = 3, b = 4;
+
+    EXPECT_THAT(a, in_range);
+    EXPECT_THAT(b, in_range);       //Thus, as we have defined matcher, we can use it multiple times
+}
