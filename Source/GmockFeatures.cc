@@ -223,3 +223,34 @@ TEST(GmockFeatures, MultiusageMatcher)
     EXPECT_THAT(a, in_range);
     EXPECT_THAT(b, in_range);       //Thus, as we have defined matcher, we can use it multiple times
 }
+
+/* Expectation set */
+
+/*
+ON_CALL - defines behaviour of method, without checking envinroment in which it was called.
+EXPECT_CALL - defines behaviour of the method, and allows to check envinroment in which it was called
+
+By default we shall use ON_CALL, as EXPECT_CALL can cause a failure if the expectation defined by mtchers is not fullfilled
+
+*/
+TEST(GmockFeatures, OnCallBehaviour)
+{
+    Mock6 oMock;
+
+    ON_CALL(oMock, method1).WillByDefault(Return(1));   //We set method 1 to return always 1. We do not care about passed argument.
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_EQ(oClass.foo1(2), 1);    //And we expect foo1 to return 1, even if we pass 2 to foo1()
+}
+
+TEST(GmockFeatures, ExpectCallBehaviour)
+{
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method1(1)).WillOnce(Return(1));   //We set method 1 to return always 1. We will get a failure if passed arg will not be 1
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_EQ(oClass.foo1(1), 1);    //And we expect foo1 to return 1, even if we pass 2 to foo1()
+}

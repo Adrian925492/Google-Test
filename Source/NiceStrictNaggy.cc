@@ -71,6 +71,7 @@ TEST(niceStrictNaggy, strictMockTest)
     ::testing::StrictMock<Mock3> oMock;     //We use strict mock object. Not expected method2() call will give a failure.
 
     EXPECT_CALL(oMock, method1);
+    EXPECT_CALL(oMock, method2);
 
     TestedClass3 oClass(&oMock);     //Tested class instantiation
     
