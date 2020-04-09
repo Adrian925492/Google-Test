@@ -167,6 +167,23 @@ TEST(GmockFeatures, SimpleMatchersOrder_expectationRetires)
     EXPECT_EQ(oClass.foo1(1), 2);
 }
 
+/* Returning live values from mocks */
+using ::testing::ReturnPointee;
+
+TEST(GmockFeatures, SimpleMatchersOrder_returnLiveValues)
+{
+    int x = 0;
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method1(_)).WillRepeatedly(ReturnPointee(&x));
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_EQ(oClass.foo1(1), 0);
+    x = 2;      //Here we can change live value returned by mock method 1!
+    EXPECT_EQ(oClass.foo1(1), 2);    
+}
+
 /* Defining own matcher */
 MATCHER(IsEven, ""){return (arg % 2) == 0;}     //Non argument matcher
 MATCHER_P(IsEqual, a, ""){return (arg == a);}     //One argument matcher
