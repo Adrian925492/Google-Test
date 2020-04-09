@@ -128,6 +128,45 @@ TEST(GmockFeatures, SimpleMatchersOrder_withSequence)
     oClass.foo2(4);
 }
 
+/* Partial sequence */
+TEST(GmockFeatures, SimpleMatchersOrder_withPartialSequence)
+{
+    Mock6 oMock;
+
+    //Here we are interested to method1 be called before method2 and 3; but order of calling methods 2 and 3 does not matter.
+
+    ::testing::Sequence s1, s2;     //We define 2 sequences, one for method 1->2 order, and other formethod 1->3 order
+
+    EXPECT_CALL(oMock, method1).InSequence(s1, s2);
+    EXPECT_CALL(oMock, method2).InSequence(s1);
+    EXPECT_CALL(oMock, method3(::testing::TypedEq<char>('c'))).InSequence(s2);
+
+    TestedClass oClass(&oMock);
+
+    oClass.foo1(3);
+    oClass.foo2(1);
+    oClass.foo3('c');
+}
+
+/* Steering when expectation expires */
+TEST(GmockFeatures, SimpleMatchersOrder_expectationRetires)
+{
+    Mock6 oMock;
+
+    //Here we expect, that only first call of method1 with argument 1 will return 1. Every other call 
+    //shall match to 2nd expect, and return 2. Normally, saturated expects does not expire after matching, so ot will
+    //not work. We have to use .RetiresOnSaturation() to expire by hand expectation after 1st match.
+
+    EXPECT_CALL(oMock, method1(_)).WillRepeatedly(Return(2));
+    EXPECT_CALL(oMock, method1(1)).RetiresOnSaturation();
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_EQ(oClass.foo1(1), 0);   //Here expect 2 is saturated
+    EXPECT_EQ(oClass.foo1(2), 2);
+    EXPECT_EQ(oClass.foo1(1), 2);
+}
+
 /* Defining own matcher */
 MATCHER(IsEven, ""){return (arg % 2) == 0;}     //Non argument matcher
 MATCHER_P(IsEqual, a, ""){return (arg == a);}     //One argument matcher
@@ -254,3 +293,4 @@ TEST(GmockFeatures, ExpectCallBehaviour)
 
     EXPECT_EQ(oClass.foo1(1), 1);    //And we expect foo1 to return 1, even if we pass 2 to foo1()
 }
+
