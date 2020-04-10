@@ -19,6 +19,10 @@ public:
     virtual void method3(char a) {}
 
     virtual bool method4(int* a) {return true;}
+
+    virtual void method5(int a){}
+
+    virtual bool method6(int* a, int b) {return true;}
 };
 
 class TestedClass
@@ -56,6 +60,17 @@ public:
     {
         return _obj->method4(a);
     }
+
+    void foo5(int a)
+    {
+        _obj->method5(a);
+    }
+
+    bool foo6(int*a, int b)
+    {
+        return _obj->method6(a, b);
+    }
+
 private:
     Interface6* _obj;
 };
@@ -69,6 +84,8 @@ public:
     MOCK_METHOD(void, method3, (uint16_t a), (override));
     MOCK_METHOD(void, method3, (char a), (override));
     MOCK_METHOD(bool, method4, (int* a), (override));   //Pointee argument
+    MOCK_METHOD(void, method5, (int a), (override));
+    MOCK_METHOD(bool, method6, (int*a, int b), (override));
 };
 
 using ::testing::Return;
@@ -357,3 +374,133 @@ TEST(GmockFeatures, SettingTypeDefaultReturnValue)
 
     DefaultValue<bool>::Clear();        //And we clear default value setting
 }  
+
+/* Using function/ functor/ callback as mock action */
+bool userAction(int* a)
+{
+    return (*a == 2);   //Return true if a == 2
+}
+
+using ::testing::Invoke;
+
+TEST(GmockFeatures, UsinFunctionAsAction)
+{
+  
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method4(_)).WillRepeatedly(Invoke(userAction));     //Expect method4 - that returns bool type
+
+    TestedClass oClass(&oMock);
+
+    int a = 2, b = 3;
+
+    EXPECT_EQ(oClass.foo4(&a), true);      //As we have invoked function, we shall return true only if arg = 2 is passed
+    EXPECT_EQ(oClass.foo4(&b), false);
+}
+
+using ::testing::InvokeWithoutArgs;
+
+bool userAction2()
+{
+    return true;    //Return true without checking the argument
+}
+
+TEST(GmockFeatures, InvokeWithoutArguments)
+{
+  
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method4(_)).WillRepeatedly(InvokeWithoutArgs(userAction2));     //Expect method4 - that returns bool type
+
+    TestedClass oClass(&oMock);
+
+    int a = 2, b = 3;
+
+    EXPECT_EQ(oClass.foo4(&a), true);      //As we have invoked function, we shall return true always
+    EXPECT_EQ(oClass.foo4(&b), true);
+}
+
+/* Ignoring actions result */
+using ::testing::IgnoreResult;
+
+// bool userAction3(int a)
+// {
+//     return true;
+// }
+
+// TEST(GmockFeatures, InvokeWithIgnoreResults)
+// {
+  
+//     Mock6 oMock;
+
+//     EXPECT_CALL(oMock, method5(_)).WillOnce(IgnoreResult(userAction));     //Expect method4 - that returns bool type
+
+//     TestedClass oClass(&oMock);
+
+//     oClass.foo5(1);
+// }
+
+/* Invoke function as action with not fit argument list */
+bool userAction4(int* a)
+{
+    return (*a == 4);   //Return true if a == 2
+}
+
+using ::testing::WithArgs;
+
+TEST(GmockFeatures, InvokeWithArgs)
+{
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method6).WillRepeatedly(WithArgs<0>(Invoke(userAction4)));     //Here we want to bind useraction4 which takes 1 arg to mock, which takes 2 args.
+    //WithArgs<0> have created adapter that would call out invoked function passing only 0th arg from original interface to it.
+
+    TestedClass oClass(&oMock);
+
+    int a = 4, b = 3;
+
+    EXPECT_EQ(oClass.foo6(&a, 1), true);      //As we have invoked function, we shall return true only if arg = 4 is passed
+    EXPECT_EQ(oClass.foo6(&b, 2), false);
+}
+
+//Other way to do it is to declate some of arguments as unused, as follows
+
+using ::testing::Unused;
+
+bool userAction5(int* a, Unused)    //Hwre we have fitted signature, but 1 arg we say "do not matter"
+{
+    return (*a == 4);   //Return true if a == 2
+}
+
+TEST(GmockFeatures, InvokeWithUnused)
+{
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method6).WillRepeatedly(Invoke(userAction5));     //Here we want to bind useraction4 which takes 1 arg and 1 is unused to mock, which takes 2 args. 
+    
+    TestedClass oClass(&oMock);
+
+    int a = 4, b = 3;
+
+    EXPECT_EQ(oClass.foo6(&a, 1), true);      //As we have invoked function, we shall return true only if arg = 4 is passed
+    EXPECT_EQ(oClass.foo6(&b, 2), false);
+}
+
+/* Sharing actions */
+using ::testing::Action;
+
+Action<bool(int*)> action = DoAll(SetArgPointee<0>(5), Return(true));   
+//We save action, which will save 5 unter arg pointer, and returns true
+
+TEST(GmockFeatures, SharingActionTest)
+{
+    Mock6 oMock;
+    int a = 0;
+
+    EXPECT_CALL(oMock, method4).WillRepeatedly(action);
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_TRUE(oClass.foo4(&a));
+    EXPECT_EQ(a, 5);    
+}
