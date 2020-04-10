@@ -420,26 +420,6 @@ TEST(GmockFeatures, InvokeWithoutArguments)
     EXPECT_EQ(oClass.foo4(&b), true);
 }
 
-/* Ignoring actions result */
-using ::testing::IgnoreResult;
-
-// bool userAction3(int a)
-// {
-//     return true;
-// }
-
-// TEST(GmockFeatures, InvokeWithIgnoreResults)
-// {
-  
-//     Mock6 oMock;
-
-//     EXPECT_CALL(oMock, method5(_)).WillOnce(IgnoreResult(userAction));     //Expect method4 - that returns bool type
-
-//     TestedClass oClass(&oMock);
-
-//     oClass.foo5(1);
-// }
-
 /* Invoke function as action with not fit argument list */
 bool userAction4(int* a)
 {
