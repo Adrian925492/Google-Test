@@ -17,6 +17,8 @@ public:
     virtual void method3(int a) {}
     virtual void method3(uint16_t a) {}
     virtual void method3(char a) {}
+
+    virtual bool method4(int* a) {return true;}
 };
 
 class TestedClass
@@ -50,6 +52,10 @@ public:
         _obj->method3(a);
     }
 
+    bool foo4(int* a)
+    {
+        return _obj->method4(a);
+    }
 private:
     Interface6* _obj;
 };
@@ -62,6 +68,7 @@ public:
     MOCK_METHOD(void, method3, (int a), (override));
     MOCK_METHOD(void, method3, (uint16_t a), (override));
     MOCK_METHOD(void, method3, (char a), (override));
+    MOCK_METHOD(bool, method4, (int* a), (override));   //Pointee argument
 };
 
 using ::testing::Return;
@@ -311,3 +318,42 @@ TEST(GmockFeatures, ExpectCallBehaviour)
     EXPECT_EQ(oClass.foo1(1), 1);    //And we expect foo1 to return 1, even if we pass 2 to foo1()
 }
 
+/* Setting pointer argument */
+using ::testing::SetArgPointee;
+using ::testing::DoAll;
+
+TEST(GmockFeatures, WorkingOnPointerArguments)
+{
+    Mock6 oMock;
+    int a = 1; //As firts, we have specified value 1
+
+    /* Here we have case ahen return value is passed as pointer argument. The SetArgPointee action allows
+    method to set specified value on a variable pointed by passed pointer. Than, we can chack, if
+    mock actually set the variable. We expect to set value equal 5. */
+
+    EXPECT_CALL(oMock, method4(_)).WillOnce(DoAll(SetArgPointee<0>(5), Return(true)));
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_TRUE(oClass.foo4(&a));   
+    EXPECT_EQ(a, 5);
+}  
+
+/* Setting default value for return type */
+using ::testing::DefaultValue;
+
+TEST(GmockFeatures, SettingTypeDefaultReturnValue)
+{
+    bool default_val = true;
+    DefaultValue<bool>::Set(default_val);   //Here we set default return value for any mock that returns bool type
+    
+    Mock6 oMock;
+
+    EXPECT_CALL(oMock, method4(_));     //Expect method4 - that returns bool type
+
+    TestedClass oClass(&oMock);
+
+    EXPECT_EQ(oClass.foo4(nullptr), true);      //And without setting the specific retval, we shall have defaut ret val, which now is true
+
+    DefaultValue<bool>::Clear();        //And we clear default value setting
+}  
